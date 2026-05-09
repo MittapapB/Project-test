@@ -1,0 +1,32 @@
+{
+  "name": "assignment2-group-47-assignment-2",
+  "version": "1.0.0",
+  "description": "In this assignment, you will complete two major features of your Pokémon App:",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comp2537-s26/assignment2-group-47-assignment-2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/comp2537-s26/assignment2-group-47-assignment-2/issues"
+  },
+  "homepage": "https://github.com/comp2537-s26/assignment2-group-47-assignment-2#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongoose": "^9.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
