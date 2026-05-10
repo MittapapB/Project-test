@@ -12,16 +12,26 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <title>Pokemon World</title>
   </head>
-  <body>
-    <header><%- include('partials/navbar') %></header>
-    <main class="flex justify-center">
+  <body class="bg-[#FFCC01] font-[Fredoka]">
+    <header class="flex justify-center">
+      <img
+        src="images/Pokemon-World.png"
+        alt="Pokemon-World"
+        class="max-w-sm sm:max-w-2xl"
+      />
+    </header>
+    <main class="flex flex-col items-center">
       <!-- PokemonList -->
       <div
         id="pokemonList"
-        class="max-w-screen-2xl grid grid-cols-4 gap-4 mt-4"
+        class="max-w-screen-lg grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4"
       ></div>
     </main>
     <script src="code.js"></script>
