@@ -16,19 +16,13 @@
     <title>Pokemon World</title>
   </head>
   <body>
-    <header>
-      <h1>Pokemon World</h1>
-    </header>
-    <main>
-      <%- include('partials/searchbar') %>
-
+    <header><%- include('partials/navbar') %></header>
+    <main class="flex justify-center">
       <!-- PokemonList -->
-      <table>
-        <tr>
-          <th>PokemonName</th>
-        </tr>
-        <tbody id="pokemonList"></tbody>
-      </table>
+      <div
+        id="pokemonList"
+        class="max-w-screen-2xl grid grid-cols-4 gap-4 mt-4"
+      ></div>
     </main>
     <script src="code.js"></script>
   </body>
