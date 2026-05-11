@@ -1,15 +1,28 @@
-<div class="flex">
-  <label class="input">
-    <i class="fa-solid fa-magnifying-glass opacity-50"></i>
+<div class="flex w-full max-w-xs sm:max-w-xl items-center">
+  <label
+    class="input flex-1 border-2 border-[#003DA5] bg-[#FFF9C4] text-[#002a73]"
+  >
     <input id="searchInput" type="search" placeholder="Search Pokemon..." />
   </label>
-  <div class="dropdown dropdown-start">
-    <div tabindex="0" role="button" class="btn m-1">
+  <div
+    id="searchBtn"
+    tabindex="0"
+    role="button"
+    class="btn m-1 bg-[#003DA5] border-none text-[#FFF9C4]"
+  >
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </div>
+  <div class="dropdown dropdown-end">
+    <div
+      tabindex="0"
+      role="button"
+      class="btn m-1 bg-[#003DA5] border-none text-[#FFF9C4]"
+    >
       <i class="fa-solid fa-filter"></i>
     </div>
     <ul
       tabindex="-1"
-      class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+      class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm bg-[#FFF9C4]"
     >
       <li><a>Item 1</a></li>
       <li><a>Item 2</a></li>
