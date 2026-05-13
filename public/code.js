@@ -2,6 +2,7 @@ let pokemons = [];
 const pokemonList = document.getElementById("pokemonList");
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
+const typeFilter = document.getElementById("typeFilter");
 
 const renderPokemons = (filteredPokemons) => {
   pokemonList.innerHTML = "";
@@ -33,6 +34,24 @@ const renderPokemons = (filteredPokemons) => {
   }
 };
 
+const renderTypeFilter = () => {
+  const types = [];
+  for (const pokemon of pokemons) {
+    for (const type of pokemon.types) {
+      if (!types.includes(type)) {
+        types.push(type);
+      }
+    }
+  }
+  types.sort();
+  for (const type of types) {
+    const option = document.createElement("option");
+    option.value = type;
+    option.textContent = type;
+    typeFilter.appendChild(option);
+  }
+};
+
 const fetchPokemons = async () => {
   try {
     const countRes = await fetch("https://pokeapi.co/api/v2/pokemon");
@@ -55,10 +74,24 @@ const fetchPokemons = async () => {
         image: pokemonData.sprites.front_default,
       });
     }
+    renderTypeFilter();
     renderPokemons(pokemons.slice(0, 20));
   } catch (error) {
     console.log("Error fetching Pokemon", error);
   }
+};
+
+const filterPokemonByType = () => {
+  const selectedType = typeFilter.value;
+  if (selectedType === "all") {
+    renderPokemons(pokemons.slice(0, 20));
+    return;
+  }
+
+  const filteredPokemons = pokemons.filter((pokemon) => {
+    return pokemon.types.includes(selectedType);
+  });
+  renderPokemons(filteredPokemons.slice(0, 20));
 };
 
 const searchPokemon = () => {
@@ -69,6 +102,7 @@ const searchPokemon = () => {
   renderPokemons(filteredPokemons.slice(0, 20));
 };
 
+typeFilter.addEventListener("change", filterPokemonByType);
 searchBtn.addEventListener("click", searchPokemon);
 searchInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") searchPokemon();
