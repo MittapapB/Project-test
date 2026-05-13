@@ -81,30 +81,50 @@ const fetchPokemons = async () => {
   }
 };
 
-const filterPokemonByType = () => {
+const updatePokemonList = () => {
+  const searchKey = searchInput.value.toLowerCase().trim();
   const selectedType = typeFilter.value;
-  if (selectedType === "all") {
-    renderPokemons(pokemons.slice(0, 20));
-    return;
+  const selectedSort = sortSelect.value;
+
+  const filteredPokemons = pokemons.filter((pokemon) => {
+    const matchesSearch = pokemon.name.includes(searchKey);
+    const matchesType =
+      selectedType === "all" || pokemon.types.includes(selectedType);
+
+    return matchesSearch && matchesType;
+  });
+
+  if (selectedSort === "name-asc") {
+    filteredPokemons.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
   }
 
-  const filteredPokemons = pokemons.filter((pokemon) => {
-    return pokemon.types.includes(selectedType);
-  });
+  if (selectedSort === "name-desc") {
+    filteredPokemons.sort((a, b) => {
+      return b.name.localeCompare(a.name);
+    });
+  }
+
+  if (selectedSort === "type-asc") {
+    filteredPokemons.sort((a, b) => {
+      return a.types[0].localeCompare(b.types[0]);
+    });
+  }
+
+  if (selectedSort === "type-desc") {
+    filteredPokemons.sort((a, b) => {
+      return b.types[0].localeCompare(a.types[0]);
+    });
+  }
+
   renderPokemons(filteredPokemons.slice(0, 20));
 };
 
-const searchPokemon = () => {
-  const searchKey = searchInput.value.toLowerCase().trim();
-  const filteredPokemons = pokemons.filter((pokemon) => {
-    return pokemon.name.includes(searchKey);
-  });
-  renderPokemons(filteredPokemons.slice(0, 20));
-};
-
-typeFilter.addEventListener("change", filterPokemonByType);
-searchBtn.addEventListener("click", searchPokemon);
+searchBtn.addEventListener("click", updatePokemonList);
 searchInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") searchPokemon();
+  if (event.key === "Enter") updatePokemonList();
 });
+typeFilter.addEventListener("change", updatePokemonList);
+sortSelect.addEventListener("change", updatePokemonList);
 fetchPokemons();
