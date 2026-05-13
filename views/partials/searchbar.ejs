@@ -1,31 +1,47 @@
-<div class="flex w-full max-w-xs sm:max-w-xl items-center">
-  <label
-    class="input flex-1 border-2 border-[#003DA5] bg-[#FFF9C4] text-[#002a73]"
-  >
-    <input id="searchInput" type="search" placeholder="Search Pokemon..." />
-  </label>
+<div class="mx-auto flex w-full max-w-[810px] flex-col gap-3 md:flex-row">
   <div
-    id="searchBtn"
-    tabindex="0"
-    role="button"
-    class="btn m-1 bg-[#003DA5] border-none text-[#FFF9C4]"
+    class="input flex w-full border-2 border-[#003DA5] bg-[#FFF9C4] text-[#002a73] pr-0.5 pl-3 md:flex-1"
   >
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </div>
-  <div class="dropdown dropdown-end">
-    <div
-      tabindex="0"
-      role="button"
-      class="btn m-1 bg-[#003DA5] border-none text-[#FFF9C4]"
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Search Pokemon..."
+      class="grow"
+    />
+
+    <button
+      id="searchBtn"
+      class="btn btn-sm border-none bg-[#003DA5] text-[#FFF9C4]"
     >
-      <i class="fa-solid fa-filter"></i>
-    </div>
-    <ul
-      tabindex="-1"
-      class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm bg-[#FFF9C4]"
-    >
-      <li><a>Item 1</a></li>
-      <li><a>Item 2</a></li>
-    </ul>
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
   </div>
+
+  <!-- Filter + Sort -->
+  <div class="grid w-full grid-cols-2 gap-3 md:flex md:w-auto">
+    <select
+      id="typeFilter"
+      class="select select-bordered w-full border-2 border-[#003DA5] bg-[#FFF9C4] text-[#002a73] md:w-32"
+    >
+      <option value="all">All types</option>
+    </select>
+
+    <select
+      id="sortSelect"
+      class="select select-bordered w-full border-2 border-[#003DA5] bg-[#FFF9C4] text-[#002a73] md:w-36"
+    >
+      <option value="name-asc">Name A-Z</option>
+      <option value="name-desc">Name Z-A</option>
+      <option value="type-asc">Type A-Z</option>
+      <option value="type-desc">Type Z-A</option>
+    </select>
+  </div>
+
+  <!-- Clear button -->
+  <button
+    id="clearFiltersBtn"
+    class="btn w-full border-none bg-[#003DA5] text-[#FFF9C4] md:w-24"
+  >
+    Clear
+  </button>
 </div>
