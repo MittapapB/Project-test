@@ -1,8 +1,14 @@
+const POKEMONS_PER_PAGE = 20;
+let currentPage = 1;
+
 let pokemons = [];
+let currentPokemonList = [];
 const pokemonList = document.getElementById("pokemonList");
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 const typeFilter = document.getElementById("typeFilter");
+const sortSelect = document.getElementById("sortSelect");
+const paginationControls = document.getElementById("paginationControls");
 
 const renderPokemons = (filteredPokemons) => {
   pokemonList.innerHTML = "";
@@ -52,6 +58,104 @@ const renderTypeFilter = () => {
   }
 };
 
+const renderCurrentPage = (pokemonArray) => {
+  currentPokemonList = pokemonArray;
+  const startIndex = (currentPage - 1) * POKEMONS_PER_PAGE;
+  const endIndex = startIndex + POKEMONS_PER_PAGE;
+  const totalPages = Math.ceil(pokemonArray.length / POKEMONS_PER_PAGE);
+  renderPokemons(pokemonArray.slice(startIndex, endIndex));
+  renderPagination(totalPages);
+};
+
+const changePage = (page) => {
+  currentPage = page;
+  renderCurrentPage(currentPokemonList);
+};
+
+const renderFirstAndPreviousButtons = () => {
+  return `
+    <button
+      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none"
+      onclick="changePage(1)"
+    >
+      First
+    </button>
+    <button
+      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none"
+      ${currentPage === 1 ? "disabled" : ""}
+      onclick="changePage(${currentPage - 1})"
+    >
+      Previous
+    </button>
+  `;
+};
+
+const renderPageButtons = (totalPages) => {
+  let pageButtonsHTML = "";
+  let startPage = currentPage;
+  let endPage = currentPage + 3;
+  if (endPage > totalPages) {
+    endPage = totalPages;
+    startPage = totalPages - 3 < 1 ? 1 : totalPages - 3;
+  }
+  for (let page = startPage; page <= endPage; page++) {
+    pageButtonsHTML += `
+      <button
+        class="join-item btn border-none ${
+          page === currentPage
+            ? "bg-[#FFF9C4] text-[#003DA5]"
+            : "bg-[#003DA5] text-[#FFF9C4]"
+        }"
+        onclick="changePage(${page})"
+      >
+        ${page}
+      </button>
+    `;
+  }
+  if (endPage < totalPages) {
+    pageButtonsHTML += `
+      <button class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none">
+        ...
+      </button>
+      <button
+        class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none"
+        onclick="changePage(${totalPages})"
+      >
+        ${totalPages}
+      </button>
+    `;
+  }
+  return pageButtonsHTML;
+};
+
+const renderNextAndLastButtons = (totalPages) => {
+  return `
+    <button
+      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none"
+      ${currentPage === totalPages ? "disabled" : ""}
+      onclick="changePage(${currentPage + 1})"
+    >
+      Next
+    </button>
+    <button
+      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none"
+      onclick="changePage(${totalPages})"
+    >
+      Last
+    </button>
+  `;
+};
+
+const renderPagination = (totalPages) => {
+  paginationControls.innerHTML = `
+    <div class="join">
+      ${renderFirstAndPreviousButtons()}
+      ${renderPageButtons(totalPages)}
+      ${renderNextAndLastButtons(totalPages)}
+    </div>
+  `;
+};
+
 const fetchPokemons = async () => {
   try {
     const countRes = await fetch("https://pokeapi.co/api/v2/pokemon");
@@ -75,7 +179,7 @@ const fetchPokemons = async () => {
       });
     }
     renderTypeFilter();
-    renderPokemons(pokemons.slice(0, 20));
+    renderCurrentPage(pokemons);
   } catch (error) {
     console.log("Error fetching Pokemon", error);
   }
@@ -118,13 +222,16 @@ const updatePokemonList = () => {
     });
   }
 
-  renderPokemons(filteredPokemons.slice(0, 20));
+  currentPage = 1;
+  renderCurrentPage(filteredPokemons);
 };
 
 searchBtn.addEventListener("click", updatePokemonList);
 searchInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") updatePokemonList();
 });
+
 typeFilter.addEventListener("change", updatePokemonList);
 sortSelect.addEventListener("change", updatePokemonList);
+
 fetchPokemons();
