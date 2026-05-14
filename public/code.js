@@ -4,12 +4,17 @@ let currentPage = 1;
 let pokemons = [];
 let currentPokemonList = [];
 const pokemonList = document.getElementById("pokemonList");
+
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 const typeFilter = document.getElementById("typeFilter");
 const sortSelect = document.getElementById("sortSelect");
 const paginationControls = document.getElementById("paginationControls");
 const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+
+const adminPC = document.getElementById("adminPC");
+const adminBox = document.getElementById("adminBox");
+const usersList = document.getElementById("usersList");
 
 const renderPokemons = (filteredPokemons) => {
   pokemonList.innerHTML = "";
@@ -36,10 +41,10 @@ const renderPokemons = (filteredPokemons) => {
     pokemonItem.innerHTML = `
       <div class="flex justify-end w-full">
         ${pokemon.types
-          .map((type) => {
-            return `<span class="badge badge-sm text-center text-white bg-[#003DA5]">${type}</span>`;
-          })
-          .join("")}
+        .map((type) => {
+          return `<span class="badge badge-sm text-center text-white bg-[#003DA5]">${type}</span>`;
+        })
+        .join("")}
       </div>
       <img src="${pokemon.image}" class="h-20 w-20">
       <div class="card-body items-center p-2 max-h-fit">
@@ -91,9 +96,8 @@ const renderFirstAndPreviousButtons = () => {
       First
     </button>
     <button
-      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none hover:bg-[#FFF9C4] hover:text-[#003DA5] ${
-        currentPage === 1 ? "hidden" : ""
-      }"
+      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none hover:bg-[#FFF9C4] hover:text-[#003DA5] ${currentPage === 1 ? "hidden" : ""
+    }"
       onclick="changePage(${currentPage - 1})"
     >
       Previous
@@ -112,11 +116,10 @@ const renderPageButtons = (totalPages) => {
   for (let page = startPage; page <= endPage; page++) {
     pageButtonsHTML += `
       <button
-        class="join-item btn border-none hover:bg-[#FFF9C4] hover:text-[#003DA5] ${
-          page === currentPage
-            ? "bg-[#FFF9C4] text-[#003DA5]"
-            : "bg-[#003DA5] text-[#FFF9C4]"
-        }"
+        class="join-item btn border-none hover:bg-[#FFF9C4] hover:text-[#003DA5] ${page === currentPage
+        ? "bg-[#FFF9C4] text-[#003DA5]"
+        : "bg-[#003DA5] text-[#FFF9C4]"
+      }"
         onclick="changePage(${page})"
       >
         ${page}
@@ -142,9 +145,8 @@ const renderPageButtons = (totalPages) => {
 const renderNextAndLastButtons = (totalPages) => {
   return `
     <button
-      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none hover:bg-[#FFF9C4] hover:text-[#003DA5] ${
-        currentPage === totalPages ? "hidden" : ""
-      }"
+      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none hover:bg-[#FFF9C4] hover:text-[#003DA5] ${currentPage === totalPages ? "hidden" : ""
+    }"
       onclick="changePage(${currentPage + 1})"
     >
       Next
@@ -277,6 +279,142 @@ const clearFilters = () => {
   updatePokemonList();
 };
 
+const setAdminBoxVisibility = (isAdmin) => {
+  if (isAdmin) {
+    adminPC.classList.remove("hidden");
+  } else {
+    adminPC.classList.add("hidden");
+  }
+};
+
+const fetchAdminStatus = async () => {
+  try {
+    const userRes = await fetch("/auth/me");
+    if (userRes.ok) {
+      const userData = await userRes.json();
+      return userData.user?.role === "admin";
+    }
+  } catch (error) {
+    console.error("Error fetching admin status:", error);
+    return false;
+  }
+};
+
+const fetchUsers = async () => {
+  try {
+    const usersRes = await fetch("/admin/users");
+    if (usersRes.ok) {
+      const usersData = await usersRes.json();
+      console.log("Fetched users:", usersData);
+      return usersData.users;
+    } else {
+      console.error("Failed to fetch users:", usersRes.statusText);
+    }
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+};
+
+const updateUser = async (username) => {
+  const newUsername = prompt("Enter new username (leave blank to keep current):");
+  const newRole = prompt("Enter new role (admin/user, leave blank to keep current):");
+  if (!newUsername && !newRole) {
+    return;
+  }
+  try {
+    await fetch(`/admin/updateUser/${username}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: newUsername,
+        role: newRole,
+        password: null
+      }),
+    });
+  } catch (error) {
+    console.error("Error updating user:", error);
+  }
+};
+
+const deleteUser = async (username) => {
+  if (!confirm(`Are you sure you want to delete user "${username}"? This action cannot be undone.`)) {
+    return;
+  }
+  try {
+    await fetch(`/admin/deleteUser/${username}`, {
+      method: "POST"
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+  }
+};
+
+const renderAdminBox = (users) => {
+  if (!users || users.length === 0) {
+    usersList.innerHTML = "<p class='text-center'>No users found.</p>";
+    return;
+  }
+
+  for (const user of users) {
+    const userItem = document.createElement("div");
+    userItem.classList.add(
+      "card",
+      "w-40",
+      "h-fit",
+      "bg-[#FFF9C4]",
+      "items-center",
+      "justify-between",
+      "p-4",
+      "shadow-md",
+      "border-2",
+      "border-[#003DA5]",
+      "transition",
+      "duration-300",
+      "ease-in-out",
+      "hover:scale-110",
+      "hover:shadow-xl",
+      "cursor-pointer",
+    );
+    userItem.innerHTML = `
+    <div class="card-body flex items-center p-2 max-h-fit">
+      <h2 class="card-title text-center">${user.username}</h2>
+      <span class="badge text-[#FFF9C4] bg-[${user.role === 'admin' ? '#811E09' : '#003DA5'}]">${user.role}</span>
+    </div>
+
+    <div class="card-actions justify-start">
+      <button class="btn btn-sm bg-[#003DA5] text-[#FFF9C4] border-2 hover:bg-[#FFF9C4] hover:border-[#003DA5] hover:text-[#003DA5] transition duration-300"
+        onclick="updateUser('${user.username}')">
+        Edit
+      </button>
+      <button class="btn btn-sm bg-[#C31F27] text-[#FFF9C4] border-2  hover:bg-[#FFF9C4] hover:border-[#811E09] hover:text-[#C31F27]"
+        onclick="deleteUser('${user.username}')">
+        Delete
+      </button>
+    </div>
+    
+    `;
+    console.log("Rendering user:", user);
+    usersList.appendChild(userItem);
+  }
+};
+const renderAdminPC = async () => {
+  await fetch("/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username: "Red",
+      password: "secureme123",
+      rememberMe: false
+    })
+  });
+  setAdminBoxVisibility(await fetchAdminStatus());
+  renderAdminBox(await fetchUsers());
+};
+
 searchBtn.addEventListener("click", updatePokemonList);
 searchInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") updatePokemonList();
@@ -286,4 +424,5 @@ typeFilter.addEventListener("change", updatePokemonList);
 sortSelect.addEventListener("change", updatePokemonList);
 clearFiltersBtn.addEventListener("click", clearFilters);
 
+renderAdminPC();
 fetchPokemons();

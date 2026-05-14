@@ -15,6 +15,10 @@ const { authRoutes } = require("./server/auth");
 
 const PORT = process.env.PORT || 3000;
 
+/**
+ * @function connectDB
+ * @description Connects to the MongoDB database.
+ */
 async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -24,7 +28,13 @@ async function connectDB() {
   console.log("Connected to Pokemon World database");
 };
 
+/**
+ * @function main
+ * 
+ * @description The server entrypoint.
+ */
 async function main() {
+  // DB setup
   try {
     await connectDB();
   } catch (error) {
@@ -32,12 +42,13 @@ async function main() {
     return;
   }
 
+  // Server setup
   try {
     app.use(sessionConfig);
     app.set("view engine", "ejs");
 
     app.use(express.static("public"));
-    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json());
 
     app.use("/admin", adminRoutes);
     app.use("/auth", authRoutes);
