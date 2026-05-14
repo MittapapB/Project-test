@@ -349,6 +349,7 @@ const updateUser = async (username) => {
   const newUsername = prompt("Enter new username (leave blank to keep current):");
   const newRole = prompt("Enter new role (admin/user, leave blank to keep current):");
   if (!newUsername && !newRole) {
+    alert("No changes entered. User update cancelled.");
     return;
   }
   try {
@@ -363,6 +364,7 @@ const updateUser = async (username) => {
         password: null
       }),
     });
+    alert("User update successful.");
     window.location.reload();
   } catch (error) {
     console.error("Error updating user:", error);
@@ -378,6 +380,7 @@ const deleteUser = async (username) => {
       method: "POST",
       include: "credentials",
     });
+    alert("User deletion successful.");
     window.location.reload();
   } catch (error) {
     console.error("Error deleting user:", error);
@@ -474,6 +477,8 @@ clearFiltersBtn.addEventListener("click", clearFilters);
 
 document.addEventListener("DOMContentLoaded", async () => {
   await getUser();
-  renderAdminPC();
-  fetchPokemons();
+  Promise.all([
+    renderAdminPC(),
+    fetchPokemons()
+  ]);
 });
