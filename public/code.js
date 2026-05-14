@@ -182,6 +182,19 @@ const renderLoadingSpinner = () => {
   paginationControls.innerHTML = "";
 };
 
+const fetchPokemonDetail = async (pokemon) => {
+  const pokemonRes = await fetch(pokemon.url);
+  const pokemonData = await pokemonRes.json();
+  const types = pokemonData.types.map((type) => {
+    return type.type.name;
+  });
+  return {
+    name: pokemon.name,
+    types: types,
+    image: pokemonData.sprites.front_default,
+  };
+};
+
 const fetchPokemons = async () => {
   try {
     renderLoadingSpinner();
@@ -192,19 +205,11 @@ const fetchPokemons = async () => {
       `https://pokeapi.co/api/v2/pokemon?limit=${count}`,
     );
     const resultJson = await result.json();
+    const pokemonDetail = [];
     for (let i = 0; i < resultJson.results.length; i++) {
-      const pokemonRes = await fetch(resultJson.results[i].url);
-      const pokemonData = await pokemonRes.json();
-      const types = pokemonData.types.map((type) => {
-        return type.type.name;
-      });
-
-      pokemons.push({
-        name: resultJson.results[i].name,
-        types: types,
-        image: pokemonData.sprites.front_default,
-      });
+      pokemonDetail.push(fetchPokemonDetail(resultJson.results[i]));
     }
+    pokemons = await Promise.all(pokemonDetail);
     renderTypeFilter();
     renderCurrentPage(pokemons);
   } catch (error) {
