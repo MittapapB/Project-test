@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <title>Pokemon World - Login</title>
+</head>
+
+<body class="bg-[#FFCC01] font-[Fredoka] min-h-screen">
+  <header class="flex justify-center">
+    <img src="images/Pokemon-World.png" alt="Pokemon-World" class="max-w-sm sm:max-w-2xl" />
+  </header>
+  <main class="flex flex-col items-center">
+    <!-- Registered trainers count -->
+    <div
+      class="card w-fit items-center bg-[#C31F27] text-[#FFF9C4] border-2 border-[#003DA5] mb-6 shadow-lg shadow-black hover:-translate-y-1 ease-in-out transition-transform duration-300">
+      <div class="card-body">
+        <h2 class="card-title">Total Trainers:</h2>
+        <p class="text-2xl font-bold text-center">
+          <%= registeredUsers %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" role="alert" class="alert alert-error border-2 border-[#C31F27] my-2 hidden">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span id="errorMessageText">Error! Task failed successfully.</span>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm">
+      <fieldset id="loginFieldset" class="fieldset bg-[#FFF9C4] border-[#003DA5] rounded-box w-xs border-2 p-4">
+        <legend class="fieldset-legend text-lg font-bold">Login</legend>
+        <label class="label">Username</label>
+        <input type="text" class="input" name="username" placeholder="Username" />
+        <label class="label">Password</label>
+        <input type="password" class="input" name="password" placeholder="Password" />
+
+        <div class="mt-2 flex gap-2">
+          <input type="checkbox" class="checkbox checkbox-sm" name="rememberMe" />
+          <label class="label">Remember Me</label>
+        </div>
+
+        <button type="submit" class="btn btn-neutral mt-4">Login</button>
+        <p>Don't have an account yet? <a id="toRegistrationLink" href="#" class="link link-primary">Register here</a>
+        </p>
+      </fieldset>
+    </form>
+
+    <!-- Registration Form -->
+    <form id="registrationForm" class="hidden">
+      <fieldset id="registrationFieldset" class="fieldset bg-[#FFF9C4] border-[#003DA5] rounded-box w-xs border-2 p-4">
+        <legend class="fieldset-legend text-lg font-bold">Registration</legend>
+        <label class="label">Username</label>
+        <input type="text" class="input" name="username" placeholder="Username" />
+        <label class="label">Password</label>
+        <input type="password" class="input" name="password" placeholder="Password" />
+
+        <div class="mt-2 flex gap-2">
+          <input type="checkbox" class="checkbox checkbox-sm" name="rememberMe" />
+          <label class="label">Remember Me</label>
+        </div>
+
+        <button type="submit" class="btn btn-neutral mt-4">Register</button>
+        <p>Already have an account? <a id="toLoginLink" href="#" class="link link-primary">Login here</a></p>
+      </fieldset>
+    </form>
+
+  </main>
+  <script src="scripts/login.js"></script>
+</body>
+
+</html>

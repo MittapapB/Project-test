@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
-const { authenticate } = require("./auth");
+const { authenticate, logoutSession } = require("./auth");
 const { User } = require("./config");
 
 /**
@@ -54,6 +54,10 @@ router.post("/updateUser/:username", async (req, res) => {
         console.log(err);
         return res.status(500).json({ message: "Error updating user: " + err.message });
     }
+    if (req.session.user.username === username) {
+        req.session.user.username = newUsername || username;
+        req.session.user.role = newRole || req.session.user.role;
+    }
     res.status(200).json({ message: "User update successful" });
 });
 
@@ -70,6 +74,9 @@ router.post("/deleteUser/:username", async (req, res) => {
     } catch (err) {
         console.log(err);
         return res.status(500).json({ message: "Error deleting user: " + err.message });
+    }
+    if (req.session.user.username === username) {
+        logoutSession(req, res);
     }
     res.status(200).json({ message: "User deletion successful" });
 });

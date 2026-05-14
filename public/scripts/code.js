@@ -3,7 +3,8 @@ let currentPage = 1;
 
 let pokemons = [];
 let currentPokemonList = [];
-const pokemonList = document.getElementById("pokemonList");
+
+const logoutButton = document.getElementById("logoutButton");
 
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
@@ -15,6 +16,8 @@ const clearFiltersBtn = document.getElementById("clearFiltersBtn");
 const adminPC = document.getElementById("adminPC");
 const adminBox = document.getElementById("adminBox");
 const usersList = document.getElementById("usersList");
+
+const pokemonList = document.getElementById("pokemonList");
 
 const renderPokemons = (filteredPokemons) => {
   pokemonList.innerHTML = "";
@@ -289,7 +292,10 @@ const setAdminBoxVisibility = (isAdmin) => {
 
 const fetchAdminStatus = async () => {
   try {
-    const userRes = await fetch("/auth/me");
+    const userRes = await fetch("/auth/me", {
+      method: "GET",
+      include: "credentials",
+    });
     if (userRes.ok) {
       const userData = await userRes.json();
       return userData.user?.role === "admin";
@@ -302,7 +308,10 @@ const fetchAdminStatus = async () => {
 
 const fetchUsers = async () => {
   try {
-    const usersRes = await fetch("/admin/users");
+    const usersRes = await fetch("/admin/users", {
+      method: "GET",
+      include: "credentials",
+    });
     if (usersRes.ok) {
       const usersData = await usersRes.json();
       console.log("Fetched users:", usersData);
@@ -312,6 +321,27 @@ const fetchUsers = async () => {
     }
   } catch (error) {
     console.error("Error fetching users:", error);
+  }
+};
+
+const getUser = async () => {
+  try {
+    const response = await fetch("/auth/me", {
+      method: "GET",
+      include: "credentials",
+    });
+    console.log("Login status response:", response);
+    if (!response.ok) {
+      window.location.href = "/login";
+    }
+    const userData = await response.json();
+    if (!userData.user) {
+      window.location.href = "/login";
+    }
+    return userData.user;
+  } catch (error) {
+    console.error("Error getting user:", error);
+    window.location.href = "/login";
   }
 };
 
@@ -333,6 +363,7 @@ const updateUser = async (username) => {
         password: null
       }),
     });
+    window.location.reload();
   } catch (error) {
     console.error("Error updating user:", error);
   }
@@ -344,20 +375,41 @@ const deleteUser = async (username) => {
   }
   try {
     await fetch(`/admin/deleteUser/${username}`, {
-      method: "POST"
+      method: "POST",
+      include: "credentials",
     });
+    window.location.reload();
   } catch (error) {
     console.error("Error deleting user:", error);
   }
 };
 
-const renderAdminBox = (users) => {
+const logoutUser = async () => {
+  try {
+    await fetch("/auth/logout", {
+      method: "POST",
+      include: "credentials",
+    });
+    window.location.reload();
+  } catch (error) {
+    console.error("Error logging out:", error);
+  }
+};
+
+const renderAdminBox = async (users) => {
   if (!users || users.length === 0) {
     usersList.innerHTML = "<p class='text-center'>No users found.</p>";
     return;
   }
 
+  const currentUser = await getUser();
+  if (!currentUser) {
+    console.error("No current user found, cannot render admin box.");
+    return;
+  }
+
   for (const user of users) {
+    const isCurrentUser = user.username === currentUser.username;
     const userItem = document.createElement("div");
     userItem.classList.add(
       "card",
@@ -380,16 +432,19 @@ const renderAdminBox = (users) => {
     userItem.innerHTML = `
     <div class="card-body flex items-center p-2 max-h-fit">
       <h2 class="card-title text-center">${user.username}</h2>
-      <span class="badge text-[#FFF9C4] bg-[${user.role === 'admin' ? '#811E09' : '#003DA5'}]">${user.role}</span>
+      <div class="flex items-center max-w-fit mx-auto">
+      ${isCurrentUser ? "<span class='badge border-2 border-[#003DA5] text-[#003DA5] bg-[#FFCC01] ml-2'>(you)</span>" : ""}
+        <span class="badge text-[#FFF9C4] bg-[${user.role === 'admin' ? '#811E09' : '#003DA5'}]">${user.role}</span>
+      </div>
     </div>
 
     <div class="card-actions justify-start">
-      <button class="btn btn-sm bg-[#003DA5] text-[#FFF9C4] border-2 hover:bg-[#FFF9C4] hover:border-[#003DA5] hover:text-[#003DA5] transition duration-300"
-        onclick="updateUser('${user.username}')">
+      <button class="btn btn-sm bg-[${isCurrentUser ? '#aaaaaa' : '#003DA5'}] text-[#FFF9C4] border-2 hover:bg-[#FFF9C4] hover:border-[#003DA5] hover:text-[#003DA5] transition duration-300"
+        onclick="updateUser('${user.username}')" ${isCurrentUser ? "disabled" : ""}>
         Edit
       </button>
-      <button class="btn btn-sm bg-[#C31F27] text-[#FFF9C4] border-2  hover:bg-[#FFF9C4] hover:border-[#811E09] hover:text-[#C31F27]"
-        onclick="deleteUser('${user.username}')">
+      <button class="btn btn-sm bg-[${isCurrentUser ? '#aaaaaa' : '#C31F27'}] text-[#FFF9C4] border-2  hover:bg-[#FFF9C4] hover:border-[#811E09] hover:text-[#C31F27]"
+        onclick="deleteUser('${user.username}')" ${isCurrentUser ? "disabled" : ""}>
         Delete
       </button>
     </div>
@@ -399,21 +454,13 @@ const renderAdminBox = (users) => {
     usersList.appendChild(userItem);
   }
 };
+
 const renderAdminPC = async () => {
-  await fetch("/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username: "Red",
-      password: "secureme123",
-      rememberMe: false
-    })
-  });
   setAdminBoxVisibility(await fetchAdminStatus());
   renderAdminBox(await fetchUsers());
 };
+
+logoutButton.addEventListener("click", logoutUser);
 
 searchBtn.addEventListener("click", updatePokemonList);
 searchInput.addEventListener("keydown", (event) => {
@@ -424,5 +471,9 @@ typeFilter.addEventListener("change", updatePokemonList);
 sortSelect.addEventListener("change", updatePokemonList);
 clearFiltersBtn.addEventListener("click", clearFilters);
 
-renderAdminPC();
-fetchPokemons();
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await getUser();
+  renderAdminPC();
+  fetchPokemons();
+});

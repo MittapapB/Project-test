@@ -7,11 +7,11 @@ const app = express();
 
 const mongoose = require("mongoose");
 
-const { sessionConfig } = require("./server/config");
+const { sessionConfig, User } = require("./server/config");
 
 // Routes
+const { authenticate, authRoutes } = require("./server/auth");
 const { adminRoutes } = require("./server/admin");
-const { authRoutes } = require("./server/auth");
 
 const PORT = process.env.PORT || 3000;
 
@@ -50,13 +50,20 @@ async function main() {
     app.use(express.static("public"));
     app.use(express.json());
 
-    app.use("/admin", adminRoutes);
     app.use("/auth", authRoutes);
+    app.use("/admin", adminRoutes);
 
-    app.get("/", (req, res) => {
+    app.get("/", authenticate, (req, res) => {
       res.render("home.ejs", {
         placeholder: "Home",
         admin: req.session?.user?.role === "admin"
+      });
+    });
+
+    app.get("/login", async (req, res) => {
+      const usersAmount = await User.countDocuments({});
+      res.render("login.ejs", {
+        registeredUsers: usersAmount
       });
     });
 
