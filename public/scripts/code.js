@@ -42,7 +42,7 @@ const renderPokemons = (filteredPokemons) => {
       "cursor-pointer",
     );
     pokemonItem.innerHTML = `
-      <div class="flex justify-end w-full">
+      <div class="flex justify-center w-full">
         ${pokemon.types
         .map((type) => {
           return `<span class="badge badge-sm text-center text-white bg-[#003DA5]">${type}</span>`;
