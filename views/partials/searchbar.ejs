@@ -1,4 +1,6 @@
-<div class="mx-auto flex w-full max-w-2xl flex-col gap-3 md:flex-row">
+<div
+  class="mx-auto flex w-full max-w-sm flex-col gap-3 md:flex-row md:max-w-2xl sm:max-w-lg"
+>
   <div
     class="input flex w-full border-2 border-[#003DA5] bg-[#FFF9C4] text-[#002a73] pr-0.5 pl-3 md:flex-1"
   >
@@ -11,7 +13,7 @@
 
     <button
       id="searchBtn"
-      class="btn btn-sm border-none bg-[#003DA5] text-[#FFF9C4]"
+      class="btn btn-sm border-none bg-[#003DA5] text-[#FFF9C4] hover:bg-[#FFF9C4] hover:text-[#003DA5]"
     >
       <i class="fa-solid fa-magnifying-glass"></i>
     </button>
@@ -21,14 +23,14 @@
   <div class="grid w-full grid-cols-2 gap-3 md:flex md:w-auto">
     <select
       id="typeFilter"
-      class="select select-bordered w-full border-2 border-[#003DA5] bg-[#FFF9C4] text-[#002a73] md:w-32"
+      class="select select-bordered w-full border-2 cursor-pointer border-[#003DA5] bg-[#FFF9C4] text-[#002a73] md:w-32"
     >
       <option value="all">All types</option>
     </select>
 
     <select
       id="sortSelect"
-      class="select select-bordered w-full border-2 border-[#003DA5] bg-[#FFF9C4] text-[#002a73] md:w-36"
+      class="select select-bordered w-full border-2 cursor-pointer border-[#003DA5] bg-[#FFF9C4] text-[#002a73] md:w-36"
     >
       <option value="default">Default Order</option>
       <option value="name-asc">Name A-Z</option>
@@ -41,7 +43,7 @@
   <!-- Clear button -->
   <button
     id="clearFiltersBtn"
-    class="btn w-full border-none bg-[#003DA5] text-[#FFF9C4] md:w-24"
+    class="btn w-full border-none bg-[#003DA5] text-[#FFF9C4] md:w-24 hover:bg-[#FFF9C4] hover:text-[#003DA5]"
   >
     Clear
   </button>

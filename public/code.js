@@ -17,12 +17,21 @@ const renderPokemons = (filteredPokemons) => {
     const pokemonItem = document.createElement("div");
     pokemonItem.classList.add(
       "card",
+      "w-40",
+      "h-52",
       "bg-[#FFF9C4]",
       "items-center",
+      "justify-between",
       "p-4",
       "shadow-md",
       "border-2",
       "border-[#003DA5]",
+      "transition",
+      "duration-300",
+      "ease-in-out",
+      "hover:scale-110",
+      "hover:shadow-xl",
+      "cursor-pointer",
     );
     pokemonItem.innerHTML = `
       <div class="flex justify-end w-full">
@@ -32,9 +41,9 @@ const renderPokemons = (filteredPokemons) => {
           })
           .join("")}
       </div>
-      <img src="${pokemon.image}" class="">
-      <div class="card-body items-center p-2">
-        <h2 class="card-title">${pokemon.name}</h2>
+      <img src="${pokemon.image}" class="h-20 w-20">
+      <div class="card-body items-center p-2 max-h-fit">
+        <h2 class="card-title text-center">${pokemon.name}</h2>
       </div>
     `;
     pokemonList.appendChild(pokemonItem);
@@ -76,14 +85,15 @@ const changePage = (page) => {
 const renderFirstAndPreviousButtons = () => {
   return `
     <button
-      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none"
+      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none hover:bg-[#FFF9C4] hover:text-[#003DA5]"
       onclick="changePage(1)"
     >
       First
     </button>
     <button
-      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none"
-      ${currentPage === 1 ? "disabled" : ""}
+      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none hover:bg-[#FFF9C4] hover:text-[#003DA5] ${
+        currentPage === 1 ? "hidden" : ""
+      }"
       onclick="changePage(${currentPage - 1})"
     >
       Previous
@@ -102,7 +112,7 @@ const renderPageButtons = (totalPages) => {
   for (let page = startPage; page <= endPage; page++) {
     pageButtonsHTML += `
       <button
-        class="join-item btn border-none ${
+        class="join-item btn border-none hover:bg-[#FFF9C4] hover:text-[#003DA5] ${
           page === currentPage
             ? "bg-[#FFF9C4] text-[#003DA5]"
             : "bg-[#003DA5] text-[#FFF9C4]"
@@ -119,7 +129,7 @@ const renderPageButtons = (totalPages) => {
         ...
       </button>
       <button
-        class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none"
+        class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none hover:bg-[#FFF9C4] hover:text-[#003DA5]"
         onclick="changePage(${totalPages})"
       >
         ${totalPages}
@@ -132,14 +142,15 @@ const renderPageButtons = (totalPages) => {
 const renderNextAndLastButtons = (totalPages) => {
   return `
     <button
-      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none"
-      ${currentPage === totalPages ? "disabled" : ""}
+      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none hover:bg-[#FFF9C4] hover:text-[#003DA5] ${
+        currentPage === totalPages ? "hidden" : ""
+      }"
       onclick="changePage(${currentPage + 1})"
     >
       Next
     </button>
     <button
-      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none"
+      class="join-item btn bg-[#003DA5] text-[#FFF9C4] border-none hover:bg-[#FFF9C4] hover:text-[#003DA5]"
       onclick="changePage(${totalPages})"
     >
       Last
