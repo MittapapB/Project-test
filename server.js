@@ -56,6 +56,7 @@ async function main() {
     app.get("/", authenticate, (req, res) => {
       res.render("home.ejs", {
         placeholder: "Home",
+        username: req.session?.user?.username || "Guest",
         admin: req.session?.user?.role === "admin"
       });
     });
