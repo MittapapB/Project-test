@@ -9,6 +9,7 @@ const searchBtn = document.getElementById("searchBtn");
 const typeFilter = document.getElementById("typeFilter");
 const sortSelect = document.getElementById("sortSelect");
 const paginationControls = document.getElementById("paginationControls");
+const clearFiltersBtn = document.getElementById("clearFiltersBtn");
 
 const renderPokemons = (filteredPokemons) => {
   pokemonList.innerHTML = "";
@@ -156,8 +157,34 @@ const renderPagination = (totalPages) => {
   `;
 };
 
+const renderLoadingSpinner = () => {
+  pokemonList.innerHTML = `
+    <div class="col-span-full flex flex-col items-center">
+      <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+      </div>
+      <p class="text-[#003DA5] font-semibold mt-4">
+        Loading Pokémon...
+      </p>
+    </div>
+  `;
+  paginationControls.innerHTML = "";
+};
+
 const fetchPokemons = async () => {
   try {
+    renderLoadingSpinner();
     const countRes = await fetch("https://pokeapi.co/api/v2/pokemon");
     const countJson = await countRes.json();
     const count = countJson.count;
@@ -226,6 +253,14 @@ const updatePokemonList = () => {
   renderCurrentPage(filteredPokemons);
 };
 
+const clearFilters = () => {
+  searchInput.value = "";
+  typeFilter.value = "all";
+  sortSelect.value = "name-asc";
+  currentPage = 1;
+  updatePokemonList();
+};
+
 searchBtn.addEventListener("click", updatePokemonList);
 searchInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") updatePokemonList();
@@ -233,5 +268,6 @@ searchInput.addEventListener("keydown", (event) => {
 
 typeFilter.addEventListener("change", updatePokemonList);
 sortSelect.addEventListener("change", updatePokemonList);
+clearFiltersBtn.addEventListener("click", clearFilters);
 
 fetchPokemons();
