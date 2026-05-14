@@ -277,7 +277,7 @@ const updatePokemonList = () => {
 const clearFilters = () => {
   searchInput.value = "";
   typeFilter.value = "all";
-  sortSelect.value = "name-asc";
+  sortSelect.value = "default";
   currentPage = 1;
   updatePokemonList();
 };
